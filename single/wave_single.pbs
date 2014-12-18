@@ -1,0 +1,29 @@
+#!/bin/bash
+#PBS -S /bin/bash
+#PBS -q gpu
+#PBS -l nodes=1:ppn=1
+#PBS -l mem=1gb
+#PBS -l walltime=00:10:00
+
+MEX=/home/gdreid/wave_fortran/single/wave_single
+
+cd $PBS_O_WORKDIR
+echo "Current working directory is `pwd`"
+
+echo "Node file: $PBS_NODEFILE :"
+echo "---------------------"
+cat $PBS_NODEFILE
+echo "---------------------"
+PBS_NP=`/bin/awk 'END {print NR}' $PBS_NODEFILE`
+echo "Running on $PBS_NP processors."
+
+echo "GPU file: $PBS_GPUFILE :"
+echo "------------------"
+cat $PBS_GPUFILE
+echo "------------------"
+NUM_GPUS=`/bin/awk 'END {print NR}' $PBS_GPUFILE`
+echo "$NUM_GPUS GPUs assigned."
+
+echo "Starting at `date`"
+$MEX >> log_single
+echo "Finished at `date`"
